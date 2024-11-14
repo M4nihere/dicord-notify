@@ -21,6 +21,7 @@ jobs:
           # Extract the message ID from the response for future updates
           echo "message_id=$(echo $response | jq -r .id)" >> $GITHUB_ENV
 
+
   build:
     runs-on: ubuntu-latest
     needs: update-secrets
