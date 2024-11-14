@@ -14,39 +14,39 @@ jobs:
       - name: Send Initial Notification to Discord
         id: discord_message
         run: |
-          response=$(curl -X POST -H "Content-Type: application/json" -d '{
-                "content": "Pipeline :rocket: Started on '${{ github.event_name }}' by :mechanic: '${{ github.actor }}. Progress: :hourglass_flowing_sand: Initializing..."
-            }' ${{ secrets.DISCORD_WEBHOOK }})
-
+          response=$(curl -X POST -H "Content-Type: application/json" -d "{
+              \"content\": \"Pipeline :rocket: Started on ${{ github.event_name }} by :mechanic: ${{ github.actor }}. Progress: :hourglass_flowing_sand: Initializing...\"
+          }" ${{ secrets.DISCORD_WEBHOOK }})
           
           # Extract the message ID from the response for future updates
           echo "message_id=$(echo $response | jq -r .id)" >> $GITHUB_ENV
 
 
-  build:
-    runs-on: ubuntu-latest
-    needs: update-secrets
-    steps:
-      - name: Update Discord with Progress - Building
-        run: |
-          curl -X PATCH -H "Content-Type: application/json" -d '{
-              "content": ":tools: Building... :hourglass_flowing_sand: Progress: 25%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
-
-      - name: Update Discord with Progress - Server Setup Complete
-        run: |
-          curl -X PATCH -H "Content-Type: application/json" -d '{
-              "content": ":jigsaw: Server Setup Complete :hourglass_flowing_sand: Progress: 50%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
-
-      - name: Update Discord with Progress - Service Setup
-        run: |
-          curl -X PATCH -H "Content-Type: application/json" -d '{
-              "content": ":gear: Setting up Service :hourglass_flowing_sand: Progress: 75%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
-
-      - name: Update Discord - Pipeline Completed
-        run: |
-          curl -X PATCH -H "Content-Type: application/json" -d '{
-              "content": ":white_check_mark: Pipeline Completed Successfully! :100: Progress: 100%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
+  #build:
+  #  runs-on: ubuntu-latest
+  #  needs: update-secrets
+  #  steps:
+  #    - name: Update Discord with Progress - Building
+  #      run: |
+  #        curl -X PATCH -H "Content-Type: application/json" -d '{
+  #            "content": ":tools: Building... :hourglass_flowing_sand: Progress: 25%"
+  #        }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
+#
+  #    - name: Update Discord with Progress - Server Setup Complete
+  #      run: |
+  #        curl -X PATCH -H "Content-Type: application/json" -d '{
+  #            "content": ":jigsaw: Server Setup Complete :hourglass_flowing_sand: Progress: 50%"
+  #        }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
+#
+  #    - name: Update Discord with Progress - Service Setup
+  #      run: |
+  #        curl -X PATCH -H "Content-Type: application/json" -d '{
+  #            "content": ":gear: Setting up Service :hourglass_flowing_sand: Progress: 75%"
+  #        }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
+#
+  #    - name: Update Discord - Pipeline Completed
+  #      run: |
+  #        curl -X PATCH -H "Content-Type: application/json" -d '{
+  #            "content": ":white_check_mark: Pipeline Completed Successfully! :100: Progress: 100%"
+  #        }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
+#
