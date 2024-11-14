@@ -13,3 +13,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     - run: echo manish
+
+    - uses: sarisia/actions-status-discord@v1
+      if: always()
+      with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
