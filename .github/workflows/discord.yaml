@@ -15,8 +15,9 @@ jobs:
         id: discord_message
         run: |
           response=$(curl -X POST -H "Content-Type: application/json" -d '{
-              "content": "Pipeline :rocket: Started on '${{ github.event_name }}' by :mechanic: '${{ github.actor }}. Progress: :hourglass_flowing_sand: Initializing..."
-          }' ${{ secrets.DISCORD_WEBHOOK }})
+                "content": "Pipeline :rocket: Started on '${{ github.event_name }}' by :mechanic: '${{ github.actor }}. Progress: :hourglass_flowing_sand: Initializing..."
+            }' ${{ secrets.DISCORD_WEBHOOK }})
+
           
           # Extract the message ID from the response for future updates
           echo "message_id=$(echo $response | jq -r .id)" >> $GITHUB_ENV
