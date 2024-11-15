@@ -19,23 +19,6 @@ jobs:
               "content": "Pipeline :rocket: Started on '${{ github.event_name }}' by :mechanic: '${{ github.actor }}'. Progress: :hourglass_flowing_sand: Initializing..."
           }' ${{ secrets.DISCORD_WEBHOOK }})
           
-          # Check if the response is empty or contains errors
-          if [[ -z "$response" ]]; then
-            echo "Error: No response received from Discord webhook"
-            exit 1
-          fi
-
-          # Extract the message ID from the response for future updates
-          message_id=$(echo $response | jq -r .id)
-
-          if [[ "$message_id" == "null" ]]; then
-            echo "Error: Could not extract message ID"
-            exit 1
-          fi
-
-          # Store the message_id as an environment variable for later use
-          echo "message_id=$message_id" >> $GITHUB_ENV
-
       - name: Update Discord with Progress - Building
         run: |
           curl -X PATCH -H "Content-Type: application/json" -d '{
