@@ -1,0 +1,81 @@
+name: Deploying to Dev Backend
+
+on:
+  push:
+    branches:
+      - development  # Trigger only on pushes to the 'development' branch
+  pull_request:
+    branches:
+      - development  # Trigger only on pull requests targeting the 'development' branch
+   
+
+
+jobs:
+  update-secrets:
+    runs-on: dev-backend
+    env:
+      ENV_PATH: /home/ubuntu/.env
+    steps:
+      - name: Notify Discord
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{
+              "content": "Pipeline :rocket: Started on '${{ github.event_name }}' by :mechanic: '${{ github.actor }}'"
+          }' ${{ secrets.DISCORD_WEBHOOK }}
+
+  build:
+    runs-on: dev-backend  # Use your self-hosted runner tagged 'dev-backend'
+    needs: update-secrets
+    steps:
+    - name: Notify Discord
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{
+            "content": ":tools:  Building... Please wait."
+          }' ${{ secrets.DISCORD_WEBHOOK }}
+
+
+    - name: Notify Discord
+      run: |
+          curl -X POST -H "Content-Type: application/json" -d '{
+              "content": ":jigsaw:  Server Setup Complete"
+            }' ${{ secrets.DISCORD_WEBHOOK }}
+
+
+
+    - name: Notify Discord
+      run: |
+          curl -X POST -H "Content-Type: application/json" -d '{
+              "content": "Setting up Service !! :face_with_monocle:  "
+            }' ${{ secrets.DISCORD_WEBHOOK }}
+
+    - name: Notify Discord
+      run: |
+       curl -X POST -H "Content-Type: application/json" -d '{
+           "content": "Service Setup has been done !  "
+         }' ${{ secrets.DISCORD_WEBHOOK }}
+
+
+
+    - name: Notify Discord
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{
+            "content": "Service is Up and Running !!   "
+          }' ${{ secrets.DISCORD_WEBHOOK }}
+    - name: Notify Discord - Pipeline Started
+      run: |
+            curl -X POST -H "Content-Type: application/json" -d '{
+              "embeds": [
+                {
+                  "title": "Pipeline Successful",
+                  "description": "Pipeline Completed Successfully! :100:",
+                  "color": 5814783,
+                  "timestamp": "'"$(date --utc +%FT%TZ)"'",
+                  "thumbnail": {
+                    "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png"
+                  },
+                  "footer": {
+                    "text": "Triggered by: '"${{ github.actor }}"' | Commit Message: '"${{ github.event.head_commit.message }}"' | Pushed by: '"${{ github.event.pusher.name }}"'"
+                  }
+                }
+              ]
+            }' "${{ secrets.DISCORD_WEBHOOK }}"
+        
