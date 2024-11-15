@@ -17,22 +17,22 @@ jobs:
               "content": ":white_check_mark: Pipeline Completed Successfully! :100: Progress: 100%"
           }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
 
-          - name: Notify Discord - Pipeline Started
-          run: |
-                curl -X POST -H "Content-Type: application/json" -d '{
-                  "embeds": [
-                    {
-                      "title": "Pipeline Successful",
-                      "description": "Pipeline Completed Successfully! :100:",
-                      "color": 5814783,
-                      "timestamp": "'"$(date --utc +%FT%TZ)"'",
-                      "thumbnail": {
-                        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png"
-                      },
-                      "footer": {
-                        "text": "Triggered by: '"${{ github.actor }}"' | Commit Message: '"${{ github.event.head_commit.message }}"' | Pushed by: '"${{ github.event.pusher.name }}"'"
-                      }
+      - name: Notify Discord - Pipeline Started
+        run: |
+              curl -X POST -H "Content-Type: application/json" -d '{
+                "embeds": [
+                  {
+                    "title": "Pipeline Successful",
+                    "description": "Pipeline Completed Successfully! :100:",
+                    "color": 5814783,
+                    "timestamp": "'"$(date --utc +%FT%TZ)"'",
+                    "thumbnail": {
+                      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png"
+                    },
+                    "footer": {
+                      "text": "Triggered by: '"${{ github.actor }}"' | Commit Message: '"${{ github.event.head_commit.message }}"' | Pushed by: '"${{ github.event.pusher.name }}"'"
                     }
-                  ]
-                }' "${{ secrets.DISCORD_WEBHOOK }}"
-            
+                  }
+                ]
+              }' "${{ secrets.DISCORD_WEBHOOK }}"
+          
