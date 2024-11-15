@@ -11,32 +11,6 @@ jobs:
     env:
       ENV_PATH: /home/ubuntu/.env
     steps:
-      - name: Send Initial Notification to Discord
-        id: discord_message
-        run: |
-          # Send the initial message to Discord and capture the response
-          response=$(curl -X POST -H "Content-Type: application/json" -d '{
-              "content": "Pipeline :rocket: Started on '${{ github.event_name }}' by :mechanic: '${{ github.actor }}'. Progress: :hourglass_flowing_sand: Initializing..."
-          }' ${{ secrets.DISCORD_WEBHOOK }})
-          
-      - name: Update Discord with Progress - Building
-        run: |
-          curl -X PATCH -H "Content-Type: application/json" -d '{
-              "content": ":tools: Building... :hourglass_flowing_sand: Progress: 25%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
-
-      - name: Update Discord with Progress - Server Setup Complete
-        run: |
-          curl -X PATCH -H "Content-Type: application/json" -d '{
-              "content": ":jigsaw: Server Setup Complete :hourglass_flowing_sand: Progress: 50%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
-
-      - name: Update Discord with Progress - Service Setup
-        run: |
-          curl -X PATCH -H "Content-Type: application/json" -d '{
-              "content": ":gear: Setting up Service :hourglass_flowing_sand: Progress: 75%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}/messages/${{ env.message_id }}
-
       - name: Update Discord - Pipeline Completed
         run: |
           curl -X PATCH -H "Content-Type: application/json" -d '{
