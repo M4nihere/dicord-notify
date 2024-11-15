@@ -8,31 +8,26 @@ on:
 jobs:
   update-secrets:
     runs-on: ubuntu-latest
-    env:
-      ENV_PATH: /home/ubuntu/.env
     steps:
+      - name: Send Discord Notification - Pipeline Started
+        id: send_message
+        run: |
+          response=$(curl -X POST -H "Content-Type: application/json" -d '{
+              "content": ":hourglass_flowing_sand: Pipeline Started"
+          }' "${{ secrets.DISCORD_WEBHOOK }}")
+
+          # Extract the message ID from the response
+          message_id=$(echo $response | jq -r '.id')
+          echo "Message ID: $message_id"
+          echo "::set-output name=message_id::$message_id"
+
+      - name: Build Your Project
+        run: |
+          # Your build commands go here
+          echo "Building the project..."
+
       - name: Update Discord - Pipeline Completed
         run: |
           curl -X PATCH -H "Content-Type: application/json" -d '{
               "content": ":white_check_mark: Pipeline Completed Successfully! :100: Progress: 100%"
-          }' ${{ secrets.DISCORD_WEBHOOK }}
-
-      - name: Notify Discord - Pipeline Started
-        run: |
-              curl -X POST -H "Content-Type: application/json" -d '{
-                "embeds": [
-                  {
-                    "title": "Pipeline Successful",
-                    "description": "Pipeline Completed Successfully! :100:",
-                    "color": 5814783,
-                    "timestamp": "'"$(date --utc +%FT%TZ)"'",
-                    "thumbnail": {
-                      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1869px-Python-logo-notext.svg.png"
-                    },
-                    "footer": {
-                      "text": "Triggered by: '"${{ github.actor }}"' | Commit Message: '"${{ github.event.head_commit.message }}"' | Pushed by: '"${{ github.event.pusher.name }}"'"
-                    }
-                  }
-                ]
-              }' "${{ secrets.DISCORD_WEBHOOK }}"
-          
+          }' "${{ secrets.DISCORD_WEBHOOK }}/messages/${{ steps.send_message.outputs.message_id }}"
